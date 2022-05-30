@@ -15,7 +15,7 @@ import {
 } from "reactstrap";
 
 import firebase from "firebase/app";
-import { UserContext } from "../Context/UserContext";
+import { UserContext } from "../Context/UserContext"; //saving everything in context
 import { Redirect } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -25,14 +25,17 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  
   const handleSignUp = () => {
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
+      //call back ( get response back )
       .then((res) => {
         console.log(res);
         context.setUser({ email: res.user.email, uid: res.user.uid });
       })
+      //jab fail hojaye chize to  error display krdo
       .catch((error) => {
         console.log(error);
         toast(error.message, {
@@ -46,9 +49,12 @@ const Signup = () => {
     handleSignUp();
   };
 
+//if useer is already logedin no need to display form redirect it to home page
   if (context.user?.uid) {
     return <Redirect to="/" />;
   }
+  
+  //else display form
   return (
     <Container className="text-center">
       <Row>
@@ -67,7 +73,9 @@ const Signup = () => {
                       name="email"
                       id="email"
                       placeholder="provide your email"
+                      //providing value coming from state event to e.t.v
                       value={email}
+                      //as form changes we use even to trigger e
                       onChange={(e) => setEmail(e.target.value)}
                     />
                   </Col>
